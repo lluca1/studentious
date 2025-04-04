@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CurriculumController;
 
 Route::get('/', function () {
     return view('home');
@@ -24,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/events', [EventController::class, 'store'])->name('events.store');       
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');    
     Route::post('/events/{event}/signup', [EventController::class, 'signup'])->name('events.signup'); 
+    
+    //curricula
+    Route::post('/curricula', [CurriculumController::class, 'store'])->name('curricula.store');
 });
 
 require __DIR__.'/auth.php';

@@ -47,4 +47,13 @@ class Event extends Model
     {
         return $this->belongsToMany(User::class, 'event_user');
     }
+    
+    /**
+     * Get the curricula associated with this event.
+     */
+    public function curricula()
+    {
+        return $this->hasMany(Curriculum::class);
+    }
+
 }

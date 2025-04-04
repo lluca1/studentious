@@ -68,6 +68,65 @@
                     @else
                         <p class="text-gray-500">No attendees yet. Be the first to attend!</p>
                     @endif
+                    
+                    @auth
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-3">Submit Curriculum</h3>
+
+                            @if (session()->has('curriculum_message'))
+                                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+                                    {{ session('curriculum_message') }}
+                                </div>
+                            @endif
+
+                            <form action="{{ route('curricula.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                @csrf
+                                <input type="hidden" name="event_id" value="{{ $event->id }}">
+
+                                <div>
+                                    <label class="block font-medium">Title</label>
+                                    <input type="text" name="title" required class="border rounded p-2 w-full">
+                                </div>
+
+                                <div>
+                                    <label class="block font-medium">Description</label>
+                                    <textarea name="description" class="border rounded p-2 w-full"></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block font-medium">Upload PDF</label>
+                                    <input type="file" name="file" accept="application/pdf" class="block">
+                                </div>
+
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Curriculum</button>
+                            </form>
+                        </div>
+                    @endauth
+                    
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-3">Uploaded Curricula</h3>
+                    
+                        @forelse ($curricula as $curriculum)
+                            <div class="border p-4 rounded mb-4">
+                                <h4 class="text-lg font-bold">{{ $curriculum->title }}</h4>
+                                <p class="text-sm text-gray-600 mb-2">{{ $curriculum->description }}</p>
+                    
+                                @if ($curriculum->file_path)
+                                    <a href="{{ asset('storage/' . $curriculum->file_path) }}" target="_blank" class="text-blue-500 underline">
+                                        View PDF
+                                    </a>
+                                @endif
+                    
+                                <p class="text-xs text-gray-400 mt-2">
+                                    Submitted by {{ $curriculum->user->name ?? 'Unknown' }} on {{ $curriculum->created_at->format('M d, Y') }}
+                                </p>
+                            </div>
+                        @empty
+                            <p class="text-gray-500">No curricula uploaded yet for this event.</p>
+                        @endforelse
+                    </div>
+                    
+
                 </div>
             </div>
         </div>

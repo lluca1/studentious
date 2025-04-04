@@ -39,7 +39,8 @@ class ShowEvent extends Component
     public function render()
     {
         return view('livewire.events.show-event', [
-            'attendees' => $this->event->attendees()->get()
+            'attendees' => $this->event->attendees,
+            'curricula' => $this->event->curricula()->latest()->get(),
         ]);
     }
 }
