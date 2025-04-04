@@ -13,6 +13,33 @@
                     </div>
                 </div>
                 
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="font-medium mb-3">Filters</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">From Date</label>
+                            <input type="date" wire:model.live="dateFrom" class="w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">To Date</label>
+                            <input type="date" wire:model.live="dateTo" class="w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        
+                        <div class="flex flex-col justify-end">
+                            <label class="inline-flex items-center mt-2">
+                                <input type="checkbox" wire:model.live="myEvents" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Only events created by me</span>
+                            </label>
+                            
+                            <label class="inline-flex items-center mt-2">
+                                <input type="checkbox" wire:model.live="enrolledOnly" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">Only events I'm enrolled in</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
                 @if (session()->has('message'))
                     <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
                         {{ session('message') }}
