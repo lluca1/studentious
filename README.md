@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -64,3 +65,27 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+# 📚 Studentious
+
+**Studentious** is a web application that enables users to create and join group learning sessions. Designed for collaborative study, it's simple, fast, and functional.
+
+## 🚀 Features
+
+- 🌐 Web application runs directly in the browser.
+- 📅 Users can generate events for group study sessions.
+- 👥 Other users can sign up to participate in created events.
+
+## 🛠 Tech Stack
+
+- **Backend**: Laravel (PHP)
+- **Frontend**: Blade / Tailwind CSS
+- **Database**: MySQL
+
+## 📦 Installation (Local Setup)
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/studentious.git
+   cd studentious
+>>>>>>> 756ef91c1b7e85a5b6e420e5fa3d2523a278aeb8
