@@ -1,0 +1,75 @@
+<div>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 text-gray-900">
+                @if (session()->has('message'))
+                    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+                        {{ session('message') }}
+                    </div>
+                @endif
+                
+                <div class="mb-4">
+                    <a href="{{ route('events.index') }}" class="text-blue-500 hover:underline">
+                        &larr; Back to Events
+                    </a>
+                </div>
+                
+                <h2 class="text-3xl font-bold mb-2">{{ $event->title }}</h2>
+                <div class="mb-6">
+                    <div class="text-gray-600 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Start: {{ $event->start_time->format('F j, Y, g:i a') }}</span>
+                    </div>
+                    <div class="text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>End: {{ $event->end_time->format('F j, Y, g:i a') }}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-3">About this event</h3>
+                    <p class="whitespace-pre-line">{{ $event->description }}</p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-3">Organized by</h3>
+                    <p>{{ $event->creator->name ?? 'Unknown' }}</p>
+                </div>
+                
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xl font-semibold">Attendees ({{ $attendees->count() }})</h3>
+                        @auth
+                            <button wire:click="toggleAttendance" class="px-4 py-2 rounded-md {{ $isAttending ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600' }} text-white">
+                                {{ $isAttending ? 'Cancel Attendance' : 'Attend this Event' }}
+                            </button>
+                        @else
+                            <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                Login to Attend
+                            </a>
+                        @endauth
+                    </div>
+                    
+                    @if($attendees->count() > 0)
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            @foreach($attendees as $attendee)
+                                <div class="text-center">
+                                    <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2">
+                                        <span class="text-gray-700 font-bold">{{ substr($attendee->name, 0, 1) }}</span>
+                                    </div>
+                                    <p class="text-sm">{{ $attendee->name }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-gray-500">No attendees yet. Be the first to attend!</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
