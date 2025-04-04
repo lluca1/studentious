@@ -13,7 +13,7 @@ class CurriculumController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'event_id' => 'required|exists:events,id',
-            'file' => 'nullable|mimes:pdf|max:10240', // max 10MB
+            'file' => 'required|mimes:pdf|max:10240', // max 10MB
         ]);
 
         $filePath = null;
