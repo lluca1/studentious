@@ -279,12 +279,7 @@ img[alt="Background"] {
   object-fit: cover;
   object-position: center;
 } 
-/* Full-page wrapper with flex center */
-.home-wrapper {
-  @apply flex items-center justify-center min-h-screen p-6;
-}
-
-/* Glass card with lighter transparent white and subtle border */
+/* Updated nav-wrapper with blur and glassmorphism effect */
 .glass-card {
   @apply p-10 rounded-2xl shadow-xl max-w-2xl w-full relative;
   background: rgba(255, 255, 255, 0.4);
@@ -334,5 +329,19 @@ img[alt="Background"] {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.9);
+}
+.nav-wrapper {
+  @apply w-full fixed top-0 left-0 z-50;
+  background: rgba(255, 255, 255, 0.25); /* Soft light white */
+  backdrop-filter: blur(16px); /* The blur */
+  -webkit-backdrop-filter: blur(16px); /* Safari support */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Adjust body or wrapper padding to avoid nav overlap */
+body {
+  padding-top: 4rem; /* adjust if your navbar height is taller or shorter */
 }
 
