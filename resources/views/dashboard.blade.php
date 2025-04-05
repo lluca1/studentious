@@ -5,17 +5,27 @@
 @endsection
 
 @section('header')
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="studentious-heading">
         {{ __('Dashboard') }}
     </h2>
 @endsection
 
 @section('content')
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+    <div class="studentious-wrapper">
+        <div class="studentious-container">
+            <div class="studentious-card">
+                <div class="studentious-inner">
+                    <div class="studentious-alert">
+                        {{ __("You're logged in!") }}
+                    </div>
+
+                    <p class="text-gray-700 text-lg mb-6">
+                        Welcome to your personalized learning hub. You can now create events, join group sessions, and manage your learning journey with ease.
+                    </p>
+
+                    <a href="{{ route('events.index') }}" class="studentious-button inline-block">
+                        View Upcoming Events
+                    </a>
                 </div>
             </div>
         </div>

@@ -1,3 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Epilogue', sans-serif;
+    background-color: #F9FAFB;
+}
+
+.studentious-wrapper {
+    padding: 4rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: rgb(243, 244, 246);
+    min-height: 100vh;
+}
+
+.studentious-container {
+    width: 100%;
+    max-width: 760px;
+}
+
+.studentious-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.studentious-inner {
+    padding: 2.5rem;
+    color: #2C3E50;
+}
+
+.studentious-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2C3E50;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #B49BFF;
+    padding-left: 1rem;
+}
+
+.studentious-alert {
+    background-color: #ECFDF5;
+    border-left: 4px solid #10B981;
+    color: #065F46;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.studentious-field {
+    margin-bottom: 1.5rem;
+}
+
+.studentious-label {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.studentious-input,
+.studentious-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    font-size: 1rem;
+    color: #111827;
+    transition: all 0.2s ease;
+}
+
+.studentious-input:focus,
+.studentious-textarea:focus {
+    border-color: #B49BFF;
+    box-shadow: 0 0 0 3px rgba(180, 155, 255, 0.25);
+    outline: none;
+}
+
+.studentious-error {
+    color: #DC2626;
+    font-size: 0.875rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+.studentious-button {
+    background-color: #2C3E50;
+    color: #FFFFFF;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.studentious-button:hover {
+    background-color: #1F2A3A;
+    box-shadow: 0 6px 18px rgba(44, 62, 80, 0.3);
+}

@@ -17,7 +17,6 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
-
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
@@ -32,5 +31,16 @@
                 @yield('content')
             </main>
         </div>
+        <script src="https://js.puter.com/v2/"></script>
+
     </body>
 </html>
+<script>
+    function speakText(text) {
+        if (!text) return;
+        puter.ai.txt2speech(text)
+            .then(audio => audio.play())
+            .catch(err => alert("Speech failed: " + err));
+    }
+    </script>
+    

@@ -1,134 +1,103 @@
-<div>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900">
-                @if (session()->has('message'))
-                    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
-                        {{ session('message') }}
-                    </div>
-                @endif
-                
-                <div class="mb-4">
-                    <a href="{{ route('events.index') }}" class="text-blue-500 hover:underline">
-                        &larr; Back to Events
-                    </a>
+{{-- resources/views/show-event.blade.php --}}
+
+@extends('layouts.app')
+
+@section('title', __('Event Details'))
+
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ $event->title }}
+    </h2>
+@endsection
+
+@section('content')
+    <div class="py-12">
+        <div class="max-w-5xl mx-auto px-4 py-10">
+            @if (session('message'))
+                <div class="p-4 mb-6 text-sm text-green-700 bg-green-100 rounded-lg shadow">
+                    {{ session('message') }}
                 </div>
-                
-                <h2 class="text-3xl font-bold mb-2">{{ $event->title }}</h2>
-                <div class="mb-6">
-                    <div class="text-gray-600 mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>Start: {{ $event->start_time->format('F j, Y, g:i a') }}</span>
-                    </div>
-                    <div class="text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>End: {{ $event->end_time->format('F j, Y, g:i a') }}</span>
-                    </div>
-                </div>
-                
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-3">About this event</h3>
-                    <p class="whitespace-pre-line">{{ $event->description }}</p>
-                </div>
-                
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-3">Organized by</h3>
-                    <p>{{ $event->creator->name ?? 'Unknown' }}</p>
-                </div>
-                
-                <div class="mb-8">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xl font-semibold">Attendees ({{ $attendees->count() }})</h3>
-                        @auth
-                            <button wire:click="toggleAttendance" class="px-4 py-2 rounded-md {{ $isAttending ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600' }} text-white">
-                                {{ $isAttending ? 'Cancel Attendance' : 'Attend this Event' }}
-                            </button>
-                        @else
-                            <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                                Login to Attend
-                            </a>
-                        @endauth
-                    </div>
-                    
-                    @if($attendees->count() > 0)
-                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            @foreach($attendees as $attendee)
-                                <div class="text-center">
-                                    <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2">
-                                        <span class="text-gray-700 font-bold">{{ substr($attendee->name, 0, 1) }}</span>
-                                    </div>
-                                    <p class="text-sm">{{ $attendee->name }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="text-gray-500">No attendees yet. Be the first to attend!</p>
-                    @endif
-                    
-                    @auth
-                        <div class="mb-8">
-                            <h3 class="text-xl font-semibold mb-3">Submit Curriculum</h3>
+            @endif
 
-                            @if (session()->has('curriculum_message'))
-                                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
-                                    {{ session('curriculum_message') }}
-                                </div>
-                            @endif
-
-                            <form action="{{ route('curricula.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                                @csrf
-                                <input type="hidden" name="event_id" value="{{ $event->id }}">
-
-                                <div>
-                                    <label class="block font-medium">Title</label>
-                                    <input type="text" name="title" required class="border rounded p-2 w-full">
-                                </div>
-
-                                <div>
-                                    <label class="block font-medium">Description</label>
-                                    <textarea name="description" class="border rounded p-2 w-full"></textarea>
-                                </div>
-
-                                <div>
-                                    <label class="block font-medium">Upload PDF</label>
-                                    <input type="file" name="file" accept="application/pdf" class="block">
-                                </div>
-
-                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Curriculum</button>
-                            </form>
-                        </div>
-                    @endauth
-                    
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3">Uploaded Curricula</h3>
-                    
-                        @forelse ($curricula as $curriculum)
-                            <div class="border p-4 rounded mb-4">
-                                <h4 class="text-lg font-bold">{{ $curriculum->title }}</h4>
-                                <p class="text-sm text-gray-600 mb-2">{{ $curriculum->description }}</p>
-                    
-                                @if ($curriculum->file_path)
-                                    <a href="{{ asset('storage/' . $curriculum->file_path) }}" target="_blank" class="text-blue-500 underline">
-                                        View PDF
-                                    </a>
-                                @endif
-                    
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Submitted by {{ $curriculum->user->name ?? 'Unknown' }} on {{ $curriculum->created_at->format('M d, Y') }}
-                                </p>
-                            </div>
-                        @empty
-                            <p class="text-gray-500">No curricula uploaded yet for this event.</p>
-                        @endforelse
-                    </div>
-                    
-
-                </div>
+            <div class="mb-6">
+                <a href="{{ route('events.index') }}" class="text-blue-600 hover:underline text-sm">
+                    &larr; Back to Events
+                </a>
             </div>
+
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ $event->title }}</h1>
+
+            <div class="text-gray-500 mb-6">
+                <p>📅 Start: {{ $event->start_time->format('F j, Y, g:i a') }}</p>
+                <p>🕓 End: {{ $event->end_time->format('F j, Y, g:i a') }}</p>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-2">About this Event</h2>
+                <p class="text-gray-800">{{ $event->description }}</p>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-2">Organized By</h2>
+                <p>{{ $event->creator->name ?? 'Unknown' }}</p>
+            </div>
+
+            <div class="mb-12">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Uploaded Curricula</h2>
+
+                @forelse ($curricula as $curriculum)
+                    <div class="border rounded-lg p-5 mb-6 bg-white shadow-sm">
+                        <h3 class="text-lg font-bold">{{ $curriculum->title }}</h3>
+                        <p class="text-sm text-gray-600 mb-2">{{ $curriculum->description }}</p>
+
+                        @if ($curriculum->file_path)
+                            <a href="{{ asset('storage/' . $curriculum->file_path) }}" target="_blank" class="text-blue-600 hover:underline">
+                                📄 View PDF
+                            </a>
+
+                            <form action="{{ route('generate.ai.summary') }}" method="POST" class="mt-3" onsubmit="showLoading(this)">
+                                @csrf
+                                <input type="hidden" name="pdf_path" value="{{ $curriculum->file_path }}">
+                                <input type="hidden" name="curriculum_id" value="{{ $curriculum->id }}">
+                                <button type="submit" class="generate-btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                    Generate Summary & Podcast
+                                </button>
+                            </form>
+                        @endif
+
+                        @if (session('ai_curriculum_id') == $curriculum->id && session('ai_summary'))
+                            <div class="mt-4 p-4 bg-white border border-green-300 rounded shadow">
+                                <h4 class="text-lg font-semibold text-green-700 mb-2">AI Summary</h4>
+                                <p>{{ session('ai_summary') }}</p>
+
+                                @if (session('ai_audio_url'))
+                                    <h5 class="text-md font-semibold text-green-700 mb-2">Podcast</h5>
+                                    <audio controls class="w-full">
+                                        <source src="{{ session('ai_audio_url') }}" type="audio/mpeg">
+                                        Your browser does not support audio.
+                                    </audio>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @empty
+                    <p class="text-gray-500">No curricula uploaded yet.</p>
+                @endforelse
+            </div>
+
+            @if (session('ai_error'))
+                <div class="p-4 bg-red-100 text-red-700 rounded">
+                    {{ session('ai_error') }}
+                </div>
+            @endif
         </div>
     </div>
-</div>
+
+    <script>
+    function showLoading(form) {
+        const btn = form.querySelector('.generate-btn');
+        btn.textContent = 'Generating...';
+        btn.disabled = true;
+    }
+    </script>
+@endsection
