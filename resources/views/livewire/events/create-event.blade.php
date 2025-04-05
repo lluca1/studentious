@@ -36,6 +36,18 @@
                             <input type="datetime-local" id="end_time" wire:model="end_time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             @error('end_time') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
+                        
+                        <!-- Tags Selection -->
+                        <div class="mb-4">
+                            <label for="selectedTags" class="block text-sm font-medium text-gray-700">Event Tags</label>
+                            <select id="selectedTags" wire:model="selectedTags" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-sm text-gray-500">Hold Ctrl (or Cmd on Mac) to select multiple tags</p>
+                            @error('selectedTags') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                     
                     <div class="mb-6">

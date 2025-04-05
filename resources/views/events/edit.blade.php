@@ -59,6 +59,21 @@
                             </div>
                         </div>
                         
+                        <!-- Add Tags Selection -->
+                        <div>
+                            <x-input-label for="tags" :value="__('Tags')" />
+                            <select id="tags" name="tags[]" multiple 
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}" {{ in_array($tag->id, $eventTags) ? 'selected' : '' }}>
+                                        {{ $tag->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Hold Ctrl (or Cmd on Mac) to select multiple tags</p>
+                            <x-input-error :messages="$errors->get('tags')" class="mt-2" />
+                        </div>
+                        
                         <div class="flex items-center justify-end gap-4">
                             <a href="{{ route('events.show', $event) }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 Cancel
