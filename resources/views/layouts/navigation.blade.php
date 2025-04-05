@@ -1,126 +1,81 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ url('/') }}">
-                        <x-application-logo class="block h-12 w-auto fill-current text-blue-500" />
+<nav x-data="{ open: false }" class="nav-wrapper">
+    <div class="nav-container">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <a href="{{ url('/') }}" class="nav-logo">
+                    <img src="{{ asset("/images/nav-logo.png") }}" alt="Studentious Logo" class="object-cover object-center max-h-12">
+                </a>
+            </div>
+
+            <!-- Links -->
+            @auth
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'nav-link-active' : '' }}">
+                        Dashboard
+                    </a>
+                    <a href="{{ route('events.index') }}" class="nav-link {{ request()->routeIs('events.index') ? 'nav-link-active' : '' }}">
+                        Events
+                    </a>
+                    <a href="{{ route('events.create') }}" class="nav-link {{ request()->routeIs('events.create') ? 'nav-link-active' : '' }}">
+                        Create Event
                     </a>
                 </div>
+            @endauth
 
-                <!-- Navigation Links (only for authenticated users) -->
+            <!-- Auth Buttons or Dropdown -->
+            <div class="hidden md:flex items-center space-x-4">
                 @auth
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-5 sm:flex">
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
-                            {{ __('Events') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('events.create')" :active="request()->routeIs('events.create')">
-                            {{ __('Create Event') }}
-                        </x-nav-link>
-                    </div>
-                @endauth
-            </div>
-
-            <!-- Right Side: Authenticated or Guest -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                @auth
-                    <!-- Settings Dropdown -->
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
-                                <div>{{ Auth::user()->name }}</div>
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-
-                            <!-- Logout -->
+                    <div class="relative" x-data="{ dropdownOpen: false }">
+                        <button @click="dropdownOpen = !dropdownOpen" class="nav-user-btn">
+                            {{ Auth::user()->name }}
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div x-show="dropdownOpen" @click.away="dropdownOpen = false" class="nav-dropdown" x-cloak>
+                            <a href="{{ route('profile.edit') }}" class="nav-dropdown-item">Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
+                                <button type="submit" class="nav-dropdown-item">Log Out</button>
                             </form>
-                        </x-slot>
-                    </x-dropdown>
-                @else
-                    <!-- Guest Links -->
-                    <div class="flex space-x-4">
-                        <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-800">Login</a>
-                        <a href="{{ route('register') }}" class="text-sm text-blue-600 hover:underline">Register</a>
+                        </div>
                     </div>
+                @else
+                    <a href="{{ route('login') }}" class="nav-auth-link">Login</a>
+                    <a href="{{ route('register') }}" class="nav-auth-link nav-auth-register">Register</a>
                 @endauth
             </div>
 
-            <!-- Hamburger Menu -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none transition">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open}" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open}" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button @click="open = ! open" class="nav-toggle">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                        <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- Responsive Navigation Menu (Mobile) -->
-    <div :class="{'block': open, 'hidden': ! open}" class="sm:hidden hidden">
-        @auth
-            <div class="pt-2 pb-3 space-y-1">
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    {{ __('Dashboard') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
-                    {{ __('Events') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('events.create')" :active="request()->routeIs('events.create')">
-                    {{ __('Create Event') }}
-                </x-responsive-nav-link>
-            </div>
-
-            <!-- Responsive Settings Options -->
-            <div class="pt-4 pb-1 border-t border-gray-200">
-                <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
-
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                            {{ __('Log Out') }}
-                        </x-responsive-nav-link>
-                    </form>
-                </div>
-            </div>
-        @else
-            <div class="pt-4 pb-3 space-y-1 border-t border-gray-200">
-                <x-responsive-nav-link :href="route('login')">
-                    {{ __('Login') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('register')">
-                    {{ __('Register') }}
-                </x-responsive-nav-link>
-            </div>
-        @endauth
+        <!-- Mobile Menu -->
+        <div x-show="open" class="md:hidden mt-2 space-y-2">
+            @auth
+                <a href="{{ route('dashboard') }}" class="nav-link-mobile">Dashboard</a>
+                <a href="{{ route('events.index') }}" class="nav-link-mobile">Events</a>
+                <a href="{{ route('events.create') }}" class="nav-link-mobile">Create Event</a>
+                <a href="{{ route('profile.edit') }}" class="nav-link-mobile">Profile</a>
+                <form method="POST" action="{{ route('logout') }}" class="nav-dropdown-form px-4">
+                    @csrf
+                    <button type="submit" class="nav-link-mobile text-left w-full">Log Out</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="nav-link-mobile">Login</a>
+                <a href="{{ route('register') }}" class="nav-link-mobile">Register</a>
+            @endauth
+        </div>
     </div>
 </nav>
