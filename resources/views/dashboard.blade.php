@@ -19,7 +19,7 @@
                 </div>
             @endif
             
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="rounded-container">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-medium">{{"Welcome back, " . auth()->user()->name . "!"}}</h3>

@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.rounded-container {
+    @apply bg-white/80 overflow-hidden shadow-sm sm:rounded-lg;
+  }
+  
+main {
+    @apply flex-grow min-h-screen;
+    background: radial-gradient(circle at top left, #e0f7ff, rgb(59 130 246), #f8fbff);
+}
+
+nav {
+    @apply bg-white/80 backdrop-blur-lg shadow-xl border-b border-white/50;
+  }
+  
