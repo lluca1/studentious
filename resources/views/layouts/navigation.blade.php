@@ -68,10 +68,11 @@
                 <a href="{{ route('events.index') }}" class="nav-link-mobile">Events</a>
                 <a href="{{ route('events.create') }}" class="nav-link-mobile">Create Event</a>
                 <a href="{{ route('profile.edit') }}" class="nav-link-mobile">Profile</a>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" class="nav-dropdown-form">
                     @csrf
-                    <button type="submit" class="nav-link-mobile">Log Out</button>
+                    <button type="submit" class="nav-dropdown-item">Log Out</button>
                 </form>
+                
             @else
                 <a href="{{ route('login') }}" class="nav-link-mobile">Login</a>
                 <a href="{{ route('register') }}" class="nav-link-mobile">Register</a>
