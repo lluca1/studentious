@@ -13,6 +13,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     //dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/export-all-events', [DashboardController::class, 'exportAllEvents'])->name('dashboard.export-all-events');
     
     //user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/events', [EventController::class, 'store'])->name('events.store');       
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');    
     Route::post('/events/{event}/signup', [EventController::class, 'signup'])->name('events.signup'); 
+    Route::get('/events/{event}/export', [EventController::class, 'export'])->name('events.export');
     
     //curricula
     Route::post('/curricula', [CurriculumController::class, 'store'])->name('curricula.store');
