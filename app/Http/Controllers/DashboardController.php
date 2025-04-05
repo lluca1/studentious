@@ -36,10 +36,27 @@ class DashboardController extends Controller
         
         $nextEvent = $user->events()
             ->where('start_time', '>=', now())
-            ->orderBy('start_time')
+            ->orderBy('start_time', 'asc')
             ->first();
+        
+        $taggedEvents = collect([]);
+        
+        if ($user->tags->isNotEmpty()) {
+            $userTagIds = $user->tags->pluck('id')->toArray();
             
-        return view('dashboard', compact('nextEvent'));
+            $taggedEvents = \App\Models\Event::whereHas('tags', function ($query) use ($userTagIds) {
+                $query->whereIn('tags.id', $userTagIds);
+            })
+            ->where('start_time', '>=', now())
+            ->orderBy('start_time', 'asc')
+            ->limit(9)
+            ->get();
+        }
+        
+        return view('dashboard', [
+            'nextEvent' => $nextEvent,
+            'taggedEvents' => $taggedEvents
+        ]);
     }
     
     /**

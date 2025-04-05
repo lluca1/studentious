@@ -36,6 +36,7 @@
                         </button>
                         <div x-show="dropdownOpen" @click.away="dropdownOpen = false" class="nav-dropdown" x-cloak>
                             <a href="{{ route('profile.edit') }}" class="nav-dropdown-item">Profile</a>
+                            <a href="{{ route('profile.preferences') }}" class="nav-dropdown-item">Preferences</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="nav-dropdown-item">Log Out</button>
