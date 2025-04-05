@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
     Route::post('/events/{event}/signup', [EventController::class, 'signup'])->name('events.signup'); 
     Route::get('/events/{event}/export', [EventController::class, 'export'])->name('events.export');
-    Route::get('/events/{event}/chat', EventChatroom::class)->name('events.chat');
+    Route::get('/events/{event}/chat', [EventController::class, 'chat'])->name('events.chat');
     
     //curricula
     Route::post('/curricula', [CurriculumController::class, 'store'])->name('curricula.store');

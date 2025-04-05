@@ -140,4 +140,10 @@ class EventController extends Controller
             ->header('Content-Type', 'text/calendar')
             ->header('Content-Disposition', 'attachment; filename="event-' . $event->id . '.ics"');
     }
+    
+    
+    public function chat(Event $event)
+    {
+        return view('events.event-chatroom', compact('event'));
+    }
 }
