@@ -64,4 +64,12 @@ class Event extends Model
         return $this->hasMany(Message::class);
     }
 
+    /**
+     * Get the tags for this event.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
 }

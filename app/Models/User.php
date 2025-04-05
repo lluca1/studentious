@@ -69,4 +69,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class);
     }
+
+    /**
+     * Get the tags that the user follows.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }
