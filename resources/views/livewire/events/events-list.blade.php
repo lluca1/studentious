@@ -7,7 +7,7 @@
                     <div class="flex items-center">
                         <input type="text" wire:model.debounce.300ms="search" placeholder="Search events..." 
                             class="rounded-md border-gray-300 shadow-sm">
-                        <a href="{{ route('events.create') }}" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        <a href="{{ route('events.create') }}" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 primary-button">
                             Create Event
                         </a>
                     </div>

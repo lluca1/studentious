@@ -10,7 +10,7 @@
         </p>
         <p class="text-gray-700 mb-4 line-clamp-3">{{ $event->description }}</p>
         <div class="flex space-x-2">
-            <a href="{{ route('events.show', $event) }}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            <a href="{{ route('events.show', $event) }}" class="primary-button bg-blue-500 hover:bg-blue-600">
                 View Details
             </a>
         </div>
