@@ -47,7 +47,23 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+        ]);
+        
+        $event = Event::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'creator_id' => auth()->id(),
+        ]);
+        
+        return redirect()->route('events.show', $event)
+            ->with('success', 'Event created successfully.');
     }
 
     /**
@@ -63,7 +79,12 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        if (auth()->id() !== $event->creator_id) {
+            return redirect()->route('events.show', $event)
+                ->with('error', 'You are not authorized to edit this event.');
+        }
+
+        return view('events.edit', compact('event'));
     }
 
     /**
@@ -71,7 +92,22 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        //
+        if (auth()->id() !== $event->creator_id) {
+            return redirect()->route('events.show', $event)
+                ->with('error', 'You are not authorized to update this event.');
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+        ]);
+
+        $event->update($validated);
+
+        return redirect()->route('events.show', $event)
+            ->with('success', 'Event updated successfully.');
     }
 
     /**
@@ -79,7 +115,15 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        if (auth()->id() !== $event->creator_id) {
+            return redirect()->route('events.show', $event)
+                ->with('error', 'You are not authorized to delete this event.');
+        }
+
+        $event->delete();
+
+        return redirect()->route('events.index')
+            ->with('success', 'Event deleted successfully.');
     }
 
     /**

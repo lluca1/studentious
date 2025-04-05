@@ -21,19 +21,32 @@ class CreateEvent extends Component
     public $curriculumFile;
     public $includeCurriculum = false;
     
-    protected $rules = [
-        'title' => 'required|min:3',
-        'description' => 'required|min:10',
-        'start_time' => 'required|date|after_or_equal:now',
-        'end_time' => 'required|date|after:start_time',
-        'curriculumTitle' => 'required_if:includeCurriculum,true',
-        'curriculumDescription' => 'nullable',
-        'curriculumFile' => 'required_if:includeCurriculum,true|file|mimes:pdf|max:10240', // 10MB max
-    ];
+    protected function rules()
+    {
+        return [
+            'title' => 'required|min:3',
+            'description' => 'required|min:10',
+            'start_time' => 'required|date|after_or_equal:now',
+            'end_time' => 'required|date|after:start_time',
+        ];
+    }
+    
+    protected function curriculumRules()
+    {
+        return [
+            'curriculumTitle' => 'required',
+            'curriculumDescription' => 'nullable',
+            'curriculumFile' => 'required|file|mimes:pdf|max:10240', // 10MB max
+        ];
+    }
     
     public function save()
     {
         $this->validate();
+        
+        if ($this->includeCurriculum) {
+            $this->validate($this->curriculumRules());
+        }
         
         $event = Event::create([
             'title' => $this->title,
