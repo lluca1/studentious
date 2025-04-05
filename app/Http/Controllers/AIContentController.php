@@ -38,33 +38,36 @@ class AIContentController extends Controller
         try {
             $parser = new Parser();
             $text = $parser->parseFile($pdfPath)->getText();
-            $text = substr(strip_tags($text), 0, 2000); // Shorten for summary
+            $text = substr(strip_tags($text), 0, 300); // Max 3000 chars for a better explanation
         } catch (\Exception $e) {
             return back()->with('ai_error', 'Could not extract text from PDF.');
         }
 
-        // Generate the summary using Hugging Face's summarization model
+        // Generate a task explanation using Hugging Face
         try {
-            $response = $this->client->post('https://api-inference.huggingface.co/models/facebook/bart-large-cnn', [
+            $response = $this->client->post('https://api-inference.huggingface.co/models/gpt2', [
                 'headers' => $this->headers,
-                'json' => ['inputs' => $text],
+                'json' => [
+                    'inputs' => 'Explain this task: ' . $text,
+                    'parameters' => ['max_length' => 10, 'temperature' => 0.7]
+                ],
             ]);
 
             $result = json_decode($response->getBody(), true);
-            $summary = $result[0]['summary_text'] ?? null;
+            $explanation = $result[0]['generated_text'] ?? null;
 
-            if (empty($summary)) {
-                return back()->with('ai_error', 'No summary returned from AI.');
+            if (empty($explanation)) {
+                return back()->with('ai_error', 'No explanation returned from AI.');
             }
         } catch (\Exception $e) {
-            return back()->with('ai_error', 'Summarization failed.');
+            return back()->with('ai_error', 'Explanation generation failed.');
         }
 
-        // Generate the TTS podcast using Hugging Face
+        // Generate podcast from the explanation text
         try {
             $response = $this->client->post('https://api-inference.huggingface.co/models/espnet/kan-bayashi_ljspeech_vits', [
                 'headers' => $this->headers,
-                'json' => ['inputs' => $summary], // You could also send full text here
+                'json' => ['inputs' => $explanation],
             ]);
 
             $body = $response->getBody()->getContents();
@@ -79,8 +82,9 @@ class AIContentController extends Controller
             $filename = 'ai_podcast_' . time() . '.mp3';
             Storage::disk('public')->put($filename, $body);
 
+            // Return the generated explanation and audio URL
             return back()->with([
-                'ai_summary' => $summary,
+                'ai_explanation' => $explanation,
                 'ai_audio_url' => asset("storage/{$filename}"),
                 'ai_curriculum_id' => $request->curriculum_id,
             ]);

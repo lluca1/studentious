@@ -36,11 +36,11 @@
     </body>
 </html>
 <script>
-    function speakText(text) {
-        if (!text) return;
-        puter.ai.txt2speech(text)
-            .then(audio => audio.play())
-            .catch(err => alert("Speech failed: " + err));
-    }
-    </script>
-    
+function speakText(text) {
+    if (!text) return;
+    puter.ai.txt2speech(text)
+        .then(audio => audio.play())
+        .catch(err => alert("Speech failed: " + err));
+}
+</script>
+

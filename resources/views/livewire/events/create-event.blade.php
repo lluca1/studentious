@@ -4,7 +4,7 @@
     <div class="studentious-container">
         <div class="studentious-card">
             <div class="studentious-inner">
-                <h2 class="studentious-heading">Create New Event</h2>
+                <h2 class="studentious-heading">📚 Create New Event</h2>
 
                 @if (session()->has('message'))
                     <div class="studentious-alert">
@@ -38,7 +38,7 @@
                     </div>
 
                     <button type="submit" class="studentious-button">
-                        Create Event
+                        ➕ Create Event
                     </button>
                 </form>
             </div>

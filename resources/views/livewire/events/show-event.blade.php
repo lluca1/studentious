@@ -60,15 +60,15 @@
                                 <input type="hidden" name="pdf_path" value="{{ $curriculum->file_path }}">
                                 <input type="hidden" name="curriculum_id" value="{{ $curriculum->id }}">
                                 <button type="submit" class="generate-btn bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                                    Generate Summary & Podcast
+                                    Generate Explanation & Podcast
                                 </button>
                             </form>
                         @endif
 
-                        @if (session('ai_curriculum_id') == $curriculum->id && session('ai_summary'))
+                        @if (session('ai_curriculum_id') == $curriculum->id && session('ai_explanation'))
                             <div class="mt-4 p-4 bg-white border border-green-300 rounded shadow">
-                                <h4 class="text-lg font-semibold text-green-700 mb-2">AI Summary</h4>
-                                <p>{{ session('ai_summary') }}</p>
+                                <h4 class="text-lg font-semibold text-green-700 mb-2">AI Explanation</h4>
+                                <p>{{ session('ai_explanation') }}</p>
 
                                 @if (session('ai_audio_url'))
                                     <h5 class="text-md font-semibold text-green-700 mb-2">Podcast</h5>
