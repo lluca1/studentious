@@ -61,4 +61,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Event::class, 'creator_id');
     }
+    
+    /**
+     * Get the messages associated with this user.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }

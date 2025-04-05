@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Events\EventChatroom;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CurriculumController;
 
 Route::get('/', function () {
     return view('home');
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
     Route::post('/events/{event}/signup', [EventController::class, 'signup'])->name('events.signup'); 
     Route::get('/events/{event}/export', [EventController::class, 'export'])->name('events.export');
+    Route::get('/events/{event}/chat', EventChatroom::class)->name('events.chat');
     
     //curricula
     Route::post('/curricula', [CurriculumController::class, 'store'])->name('curricula.store');

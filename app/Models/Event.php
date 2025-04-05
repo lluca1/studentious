@@ -56,4 +56,12 @@ class Event extends Model
         return $this->hasMany(Curriculum::class);
     }
 
+    /**
+     * Get the messages associated with this event.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
 }
