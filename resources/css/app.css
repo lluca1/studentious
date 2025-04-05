@@ -3,12 +3,17 @@
 @tailwind utilities;
 
 .rounded-container {
-    @apply bg-white/80 overflow-hidden shadow-sm sm:rounded-lg;
-  }
-  
+  @apply bg-white/80 overflow-hidden shadow-sm sm:rounded-lg transition-shadow duration-300;
+}
+
+.rounded-container:hover {
+  box-shadow: 0 0 20px #86b3fa, 0 0 40px #afceff;
+}
+
+
 main {
     @apply flex-grow min-h-screen;
-    background: radial-gradient(circle at top left, #e0f7ff, rgb(59 130 246), #f8fbff);
+    background: radial-gradient(circle at top left, #e0f7ff, #3b82f6, #f8fbff);
 }
 
 nav {
