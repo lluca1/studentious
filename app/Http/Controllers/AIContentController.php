@@ -24,7 +24,6 @@ class AIContentController extends Controller
  
     public function generate(Request $request)
     {
-        // Validate the request
         $request->validate([
             'pdf_path' => 'required|string',
             'curriculum_id' => 'required|integer',
@@ -35,7 +34,6 @@ class AIContentController extends Controller
             return back()->with('ai_error', 'PDF file not found.');
         }
  
-        // Extract text from the PDF
         try {
             $parser = new Parser();
             $text = $parser->parseFile($pdfPath)->getText();
@@ -43,13 +41,13 @@ class AIContentController extends Controller
             
             // Remove special characters
             $text = preg_replace('/[^\p{L}\p{N}\s\.\,\;\:\!\?\'\"]/u', ' ', $text);
-            $text = preg_replace('/\s+/', ' ', $text); // Replace multiple spaces with single space
+            $text = preg_replace('/\s+/', ' ', $text);
             $text = trim($text);
         } catch (\Exception $e) {
             return back()->with('ai_error', 'Could not extract text from PDF.');
         }
  
-        // Generate the summary using Hugging Face's summarization model
+        // Hugging Face
         try {
             $response = $this->client->post('https://api-inference.huggingface.co/models/facebook/bart-large-cnn', [
                 'headers' => $this->headers,
@@ -71,7 +69,7 @@ class AIContentController extends Controller
             return back()->with('ai_error', 'Summarization failed.');
         }
  
-        // Generate the TTS podcast using Hugging Face
+        // TTS Hugging Face
         try {
             $response = $this->client->post('https://api-inference.huggingface.co/models/espnet/kan-bayashi_ljspeech_vits', [
                 'headers' => $this->headers,
@@ -80,17 +78,14 @@ class AIContentController extends Controller
  
             $body = $response->getBody()->getContents();
  
-            // Check for errors in the response
             if (str_starts_with(trim($body), '{')) {
                 $json = json_decode($body, true);
                 return back()->with('ai_error', 'HF Error: ' . ($json['error'] ?? 'Unknown response'));
             }
  
-            // Save the podcast audio to storage
             $filename = 'ai_podcast_' . time() . '.mp3';
             Storage::disk('public')->put($filename, $body);
             
-            // Update the curriculum with the generated content
             $curriculum = Curriculum::find($request->curriculum_id);
             if ($curriculum) {
                 $curriculum->ai_summary = $summary;

@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ url('/') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-blue-500" />
+                        <x-application-logo class="block h-12 w-auto fill-current text-blue-500" />
                     </a>
                 </div>
 

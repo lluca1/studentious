@@ -10,7 +10,7 @@ class ShowEvent extends Component
     public Event $event;
     public $isAttending = false;
     public $showSubmitCurriculum = false;
-    public $showUploadedCurricula = false;
+    public $showUploadedCurricula = true;
     
     public function mount(Event $event)
     {
