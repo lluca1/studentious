@@ -9,6 +9,8 @@ class ShowEvent extends Component
 {
     public Event $event;
     public $isAttending = false;
+    public $showSubmitCurriculum = false;
+    public $showUploadedCurricula = false;
     
     public function mount(Event $event)
     {
@@ -34,6 +36,16 @@ class ShowEvent extends Component
         }
         
         $this->isAttending = !$this->isAttending;
+    }
+    
+    public function toggleSubmitCurriculum()
+    {
+        $this->showSubmitCurriculum = !$this->showSubmitCurriculum;
+    }
+    
+    public function toggleUploadedCurricula()
+    {
+        $this->showUploadedCurricula = !$this->showUploadedCurricula;
     }
     
     public function render()

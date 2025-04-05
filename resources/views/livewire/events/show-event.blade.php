@@ -15,6 +15,14 @@
                 </div>
                 
                 <h2 class="text-3xl font-bold mb-2">{{ $event->title }}</h2>
+                <div class="mb-2">
+                    <a href="{{ route('events.export', $event) }}" class="inline-block px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                        <svg class="w-4 h-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export to Calendar
+                    </a>
+                </div>
                 <div class="mb-6">
                     <div class="text-gray-600 mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,60 +78,82 @@
                     @endif
                     
                     @auth
-                        <div class="mb-8">
-                            <h3 class="text-xl font-semibold mb-3">Submit Curriculum</h3>
-
+                        <div class="mt-6 mb-8 border-t pt-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-xl font-semibold">Submit Curriculum</h3>
+                                <button wire:click="toggleSubmitCurriculum" class="text-gray-500 hover:text-gray-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $showSubmitCurriculum ? 'M19 9l-7 7-7-7' : 'M9 5l7 7-7 7' }}" />
+                                    </svg>
+                                </button>
+                            </div>
+                    
                             @if (session()->has('curriculum_message'))
                                 <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
                                     {{ session('curriculum_message') }}
                                 </div>
                             @endif
-
-                            <form action="{{ route('curricula.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                                @csrf
-                                <input type="hidden" name="event_id" value="{{ $event->id }}">
-
-                                <div>
-                                    <label class="block font-medium">Title</label>
-                                    <input type="text" name="title" required class="border rounded p-2 w-full">
-                                </div>
-
-                                <div>
-                                    <label class="block font-medium">Description</label>
-                                    <textarea name="description" class="border rounded p-2 w-full"></textarea>
-                                </div>
-
-                                <div>
-                                    <label class="block font-medium">Upload PDF</label>
-                                    <input type="file" name="file" accept="application/pdf" class="block">
-                                </div>
-
-                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Curriculum</button>
-                            </form>
+                    
+                            @if($showSubmitCurriculum)
+                                <form action="{{ route('curricula.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                    @csrf
+                                    <input type="hidden" name="event_id" value="{{ $event->id }}">
+                    
+                                    <div>
+                                        <label class="block font-medium">Title</label>
+                                        <input type="text" name="title" required class="border rounded p-2 w-full">
+                                    </div>
+                    
+                                    <div>
+                                        <label class="block font-medium">Description</label>
+                                        <textarea name="description" class="border rounded p-2 w-full"></textarea>
+                                    </div>
+                    
+                                    <div>
+                                        <label class="block font-medium">Upload PDF</label>
+                                        <input type="file" name="file" accept="application/pdf" class="block">
+                                    </div>
+                    
+                                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Curriculum</button>
+                                </form>
+                            @endif
                         </div>
                     @endauth
                     
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-3">Uploaded Curricula</h3>
+                    <div class="mb-8 border-t pt-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Uploaded Curricula ({{ count($curricula) }})</h3>
+                            <button wire:click="toggleUploadedCurricula" class="text-gray-500 hover:text-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $showUploadedCurricula ? 'M19 9l-7 7-7-7' : 'M9 5l7 7-7 7' }}" />
+                                </svg>
+                            </button>
+                        </div>
                     
-                        @forelse ($curricula as $curriculum)
-                            <div class="border p-4 rounded mb-4">
-                                <h4 class="text-lg font-bold">{{ $curriculum->title }}</h4>
-                                <p class="text-sm text-gray-600 mb-2">{{ $curriculum->description }}</p>
+                        @if($showUploadedCurricula)
+                            @forelse ($curricula as $curriculum)
+                                <div class="border p-4 rounded mb-4">
+                                    <h4 class="text-lg font-bold">{{ $curriculum->title }}</h4>
+                                    <p class="text-sm text-gray-600 mb-2">{{ $curriculum->description }}</p>
                     
-                                @if ($curriculum->file_path)
-                                    <a href="{{ asset('storage/' . $curriculum->file_path) }}" target="_blank" class="text-blue-500 underline">
-                                        View PDF
-                                    </a>
-                                @endif
+                                    @if ($curriculum->file_path)
+                                        <a href="{{ asset('storage/' . $curriculum->file_path) }}" target="_blank" class="text-blue-500 underline">
+                                            View PDF
+                                        </a>
+                                    @endif
                     
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Submitted by {{ $curriculum->user->name ?? 'Unknown' }} on {{ $curriculum->created_at->format('M d, Y') }}
-                                </p>
-                            </div>
-                        @empty
-                            <p class="text-gray-500">No curricula uploaded yet for this event.</p>
-                        @endforelse
+                                    <p class="text-xs text-gray-400 mt-2">
+                                        Submitted by {{ $curriculum->user->name ?? 'Unknown' }} on {{ $curriculum->created_at->format('M d, Y') }}
+                                    </p>
+                                </div>
+                            @empty
+                                <p class="text-gray-500">No curricula uploaded yet for this event.</p>
+                            @endforelse
+                        @else
+                            @if(count($curricula) < 1)
+                                <p class="text-gray-500">No curricula uploaded yet for this event.</p>
+                            @endif
+                        @endif
                     </div>
                     
 
