@@ -44,8 +44,8 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="nav-auth-link">Login</a>
-                    <a href="{{ route('register') }}" class="nav-auth-link nav-auth-register">Register</a>
+                    <a href="{{ route('login') }}" class="nav-auth-link primary-button">Login</a>
+                    <a href="{{ route('register') }}" class="nav-auth-link nav-auth-register primary-button">Register</a>
                 @endauth
             </div>
 
