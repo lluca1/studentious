@@ -3,6 +3,7 @@
 namespace App\Livewire\Events;
 
 use App\Models\Event;
+use App\Models\Tag;
 use Livewire\Component;
 
 class ShowEvent extends Component

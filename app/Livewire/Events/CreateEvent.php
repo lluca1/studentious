@@ -3,6 +3,7 @@
 namespace App\Livewire\Events;
 
 use App\Models\Event;
+use App\Models\Tag;
 use App\Models\Curriculum;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -15,6 +16,7 @@ class CreateEvent extends Component
     public $description;
     public $start_time;
     public $end_time;
+    public $selectedTags = [];
     
     public $curriculumTitle;
     public $curriculumDescription;
@@ -28,6 +30,8 @@ class CreateEvent extends Component
             'description' => 'required|min:10',
             'start_time' => 'required|date|after_or_equal:now',
             'end_time' => 'required|date|after:start_time',
+            'selectedTags' => 'nullable|array',
+            'selectedTags.*' => 'exists:tags,id',
         ];
     }
     
@@ -56,6 +60,11 @@ class CreateEvent extends Component
             'creator_id' => auth()->id(),
         ]);
         
+        // attach selected tags
+        if (!empty($this->selectedTags)) {
+            $event->tags()->attach($this->selectedTags);
+        }
+        
         if ($this->includeCurriculum && $this->curriculumFile) {
             $filePath = $this->curriculumFile->store('curricula', 'public');
             
@@ -75,6 +84,8 @@ class CreateEvent extends Component
     
     public function render()
     {
-        return view('livewire.events.create-event');
+        return view('livewire.events.create-event', [
+            'tags' => Tag::orderBy('name')->get()
+        ]);
     }
 }

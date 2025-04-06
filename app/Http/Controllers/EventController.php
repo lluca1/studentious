@@ -83,8 +83,11 @@ class EventController extends Controller
             return redirect()->route('events.show', $event)
                 ->with('error', 'You are not authorized to edit this event.');
         }
-
-        return view('events.edit', compact('event'));
+        
+        $tags = \App\Models\Tag::orderBy('name')->get();
+        $eventTags = $event->tags()->pluck('tags.id')->toArray();
+        
+        return view('events.edit', compact('event', 'tags', 'eventTags'));
     }
 
     /**
@@ -96,16 +99,25 @@ class EventController extends Controller
             return redirect()->route('events.show', $event)
                 ->with('error', 'You are not authorized to update this event.');
         }
-
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
-
-        $event->update($validated);
-
+        
+        $event->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+        ]);
+        
+        $event->tags()->sync($request->tags ?? []);
+        
         return redirect()->route('events.show', $event)
             ->with('success', 'Event updated successfully.');
     }
