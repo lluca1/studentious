@@ -1,105 +1,108 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
 use Smalot\PdfParser\Parser;
 use App\Models\Curriculum;
- 
+
 class AIContentController extends Controller
 {
     protected $client;
-    protected $headers;
- 
+
     public function __construct()
     {
         $this->client = new Client();
-        $this->headers = [
-            'Authorization' => 'Bearer ' . env('HUGGINGFACE_API_TOKEN'),
-            'Content-Type' => 'application/json',
-        ];
     }
- 
+
     public function generate(Request $request)
     {
         $request->validate([
             'pdf_path' => 'required|string',
             'curriculum_id' => 'required|integer',
         ]);
- 
+
         $pdfPath = storage_path('app/public/' . $request->pdf_path);
         if (!file_exists($pdfPath)) {
             return back()->with('ai_error', 'PDF file not found.');
         }
- 
+
         try {
             $parser = new Parser();
             $text = $parser->parseFile($pdfPath)->getText();
-            $text = substr(strip_tags($text), 0, 2000); // Shorten for summary
-            
-            // Remove special characters
+            $text = substr(strip_tags($text), 0, 4000);
+
             $text = preg_replace('/[^\p{L}\p{N}\s\.\,\;\:\!\?\'\"]/u', ' ', $text);
             $text = preg_replace('/\s+/', ' ', $text);
             $text = trim($text);
         } catch (\Exception $e) {
             return back()->with('ai_error', 'Could not extract text from PDF.');
         }
- 
-        // Hugging Face
+
+        // OpenAI Summarization
         try {
-            $response = $this->client->post('https://api-inference.huggingface.co/models/facebook/bart-large-cnn', [
-                'headers' => $this->headers,
+            $response = $this->client->post('https://api.openai.com/v1/chat/completions', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                    'Content-Type' => 'application/json',
+                ],
                 'json' => [
-                    'inputs' => $text,
-                    'parameters' => [
-                        'max_length' => 512, 'temperature' => 0.7
-                    ]
+                    'model' => 'gpt-3.5-turbo',
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => "Summarize the following content in a concise paragraph:\n" . $text
+                        ]
+                    ],
+                    'temperature' => 0.7,
+                    'max_tokens' => 500,
                 ],
             ]);
- 
+
             $result = json_decode($response->getBody(), true);
-            $summary = $result[0]['summary_text'] ?? null;
- 
+            $summary = $result['choices'][0]['message']['content'] ?? null;
+
             if (empty($summary)) {
-                return back()->with('ai_error', 'No summary returned from AI.');
+                return back()->with('ai_error', 'No summary returned from OpenAI.');
             }
         } catch (\Exception $e) {
-            return back()->with('ai_error', 'Summarization failed.');
+            return back()->with('ai_error', 'Summarization failed: ' . $e->getMessage());
         }
- 
-        // TTS Hugging Face
+
+        // OpenAI TTS using the TTS endpoint (requires Whisper or compatible TTS)
         try {
-            $response = $this->client->post('https://api-inference.huggingface.co/models/espnet/kan-bayashi_ljspeech_vits', [
-                'headers' => $this->headers,
-                'json' => ['inputs' => $summary],
+            $speechResponse = $this->client->post('https://api.openai.com/v1/audio/speech', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'model' => 'tts-1',
+                    'input' => $summary,
+                    'voice' => 'nova', // voices: alloy, echo, fable, onyx, nova, shimmer
+                ],
+                'stream' => true,
             ]);
- 
-            $body = $response->getBody()->getContents();
- 
-            if (str_starts_with(trim($body), '{')) {
-                $json = json_decode($body, true);
-                return back()->with('ai_error', 'HF Error: ' . ($json['error'] ?? 'Unknown response'));
-            }
- 
-            $filename = 'ai_podcast_' . time() . '.mp3';
-            Storage::disk('public')->put($filename, $body);
-            
-            $curriculum = Curriculum::find($request->curriculum_id);
-            if ($curriculum) {
-                $curriculum->ai_summary = $summary;
-                $curriculum->ai_audio_url = asset("storage/{$filename}");
-                $curriculum->save();
-            }
- 
-            return back()->with([
-                'ai_summary' => $summary,
-                'ai_audio_url' => asset("storage/{$filename}"),
-                'ai_curriculum_id' => $request->curriculum_id,
-            ]);
+
+            $filename = 'ai_podcasts/ai_podcast_' . time() . '.mp3';
+            Storage::disk('public')->put($filename, $speechResponse->getBody()->getContents());
         } catch (\Exception $e) {
             return back()->with('ai_error', 'Podcast generation failed: ' . $e->getMessage());
         }
+
+        $curriculum = Curriculum::find($request->curriculum_id);
+        if ($curriculum) {
+            $curriculum->ai_summary = $summary;
+            $curriculum->ai_audio_url = asset("storage/{$filename}");
+            $curriculum->save();
+        }
+
+        return back()->with([
+            'ai_summary' => $summary,
+            'ai_audio_url' => asset("storage/{$filename}"),
+            'ai_curriculum_id' => $request->curriculum_id,
+        ]);
     }
 }
