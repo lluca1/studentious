@@ -23,11 +23,14 @@ main {
 }
 
 .nav-wrapper {
-    background-color: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    font-family: 'Poppins', sans-serif;
-    z-index: 50;
-    position: relative;
+  @apply w-full fixed top-0 left-0 z-50;
+  background: rgba(255, 255, 255, 0.25); /* Soft light white */
+  backdrop-filter: blur(16px); /* The blur */
+  -webkit-backdrop-filter: blur(16px); /* Safari support */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  min-height: 64px; /* Ensures consistent height */
 }
 
 .nav-container {
@@ -37,11 +40,21 @@ main {
 }
 
 .nav-logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #4f46e5;
-    display: flex;
-    align-items: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  height: 48px; /* Fixed height for the logo area */
+}
+
+.nav-logo img {
+  object-fit: contain;
+  object-position: center;
+  max-height: 12;
+  width: 150px; /* Set a fixed width based on your logo */
+  height: auto;
+  aspect-ratio: auto; /* Preserves aspect ratio */
 }
 
 .nav-link {
@@ -233,6 +246,7 @@ main {
 body {
     font-family: 'Epilogue', sans-serif;
     background-color: #F9FAFB;
+    padding-top: 4rem; /* adjust if your navbar height is taller or shorter */
 }
 /* Wrapper that centers the glass card */
 .home-wrapper {
@@ -241,46 +255,6 @@ body {
 
 /* Glass effect */
 .glass-card {
-  @apply backdrop-blur-xl bg-white/20 p-10 rounded-2xl shadow-2xl max-w-2xl w-full;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
-}
-
-/* Headings */
-.home-title {
-  @apply text-5xl font-extrabold text-white mb-4;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
-
-.home-subtitle {
-  @apply text-lg text-gray-100 mb-6;
-}
-
-/* Buttons container */
-.home-buttons {
-  @apply flex justify-center space-x-4;
-}
-
-/* Buttons */
-.home-btn-primary {
-  @apply px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-300;
-}
-
-.home-btn-secondary {
-  @apply px-6 py-2 border border-blue-400 text-blue-200 font-medium rounded-lg hover:bg-blue-500 hover:text-white transition duration-300;
-}
-
-.home-btn-dashboard {
-  @apply px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition duration-300;
-}
-
-/* Ensure background image stays fixed and full screen */
-img[alt="Background"] {
-  object-fit: cover;
-  object-position: center;
-} 
-/* Updated nav-wrapper with blur and glassmorphism effect */
-.glass-card {
   @apply p-10 rounded-2xl shadow-xl max-w-2xl w-full relative;
   background: rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -288,7 +262,7 @@ img[alt="Background"] {
   -webkit-backdrop-filter: blur(20px);
 }
 
-/* Headline */
+/* Headings */
 .home-title {
   @apply text-5xl font-extrabold mb-4;
 }
@@ -329,18 +303,4 @@ img[alt="Background"] {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.9);
-}
-.nav-wrapper {
-  @apply w-full fixed top-0 left-0 z-50;
-  background: rgba(255, 255, 255, 0.25); /* Soft light white */
-  backdrop-filter: blur(16px); /* The blur */
-  -webkit-backdrop-filter: blur(16px); /* Safari support */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-/* Adjust body or wrapper padding to avoid nav overlap */
-body {
-  padding-top: 4rem; /* adjust if your navbar height is taller or shorter */
 }

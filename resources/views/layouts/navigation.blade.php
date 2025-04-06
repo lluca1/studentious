@@ -4,7 +4,7 @@
             <!-- Logo -->
             <div class="flex-shrink-0">
                 <a href="{{ url('/') }}" class="nav-logo">
-                    <img src="{{ asset("/images/nav-logo.png") }}" alt="Studentious Logo" class="object-cover object-center max-h-12">
+                    <img src="{{ asset("/images/nav-logo.png") }}" alt="Studentious Logo" class="object-cover object-center max-h-12" width="150" height="48">
                 </a>
             </div>
 
