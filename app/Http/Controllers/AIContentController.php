@@ -45,7 +45,7 @@ class AIContentController extends Controller
         try {
             $response = $this->client->post('https://api.openai.com/v1/chat/completions', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                    'Authorization' => 'Bearer ' . config('services.openai.key'),
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
@@ -75,7 +75,7 @@ class AIContentController extends Controller
         try {
             $speechResponse = $this->client->post('https://api.openai.com/v1/audio/speech', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                    'Authorization' => 'Bearer ' . config('services.openai.key'),
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
