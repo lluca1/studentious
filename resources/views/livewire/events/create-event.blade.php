@@ -39,14 +39,20 @@
                         
                         <!-- Tags Selection -->
                         <div class="mb-4">
-                            <label for="selectedTags" class="block text-sm font-medium text-gray-700">Event Tags</label>
-                            <select id="selectedTags" wire:model="selectedTags" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                @foreach($tags as $tag)
-                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                                @endforeach
-                            </select>
-                            <p class="mt-1 text-sm text-gray-500">Hold Ctrl (or Cmd on Mac) to select multiple tags</p>
-                            @error('selectedTags') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <label class="block text-sm font-medium text-gray-700">Event Tags</label>
+                            <div class="mt-1 max-h-32 overflow-y-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm">
+                                <div class="space-y-2">
+                                    @foreach($tags as $tag)
+                                        <div class="flex items-center">
+                                            <input id="tag-{{ $tag->id }}" wire:model="selectedTags" type="checkbox" value="{{ $tag->id }}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                            <label for="tag-{{ $tag->id }}" class="ml-2 block text-sm text-gray-900">
+                                                {{ $tag->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @error('selectedTags') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     

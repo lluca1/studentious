@@ -62,16 +62,21 @@
                         <!-- Add Tags Selection -->
                         <div>
                             <x-input-label for="tags" :value="__('Tags')" />
-                            <select id="tags" name="tags[]" multiple 
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                @foreach($tags as $tag)
-                                    <option value="{{ $tag->id }}" {{ in_array($tag->id, $eventTags) ? 'selected' : '' }}>
-                                        {{ $tag->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <p class="mt-1 text-xs text-gray-500">Hold Ctrl (or Cmd on Mac) to select multiple tags</p>
-                            <x-input-error :messages="$errors->get('tags')" class="mt-2" />
+                            <div class="mt-1 max-h-32 overflow-y-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm">
+                                <div class="space-y-2">
+                                    @foreach($tags as $tag)
+                                        <div class="flex items-center">
+                                            <input id="tag-{{ $tag->id }}" name="tags[]" type="checkbox" value="{{ $tag->id }}" 
+                                                   class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                                   {{ in_array($tag->id, $eventTags) ? 'checked' : '' }}>
+                                            <label for="tag-{{ $tag->id }}" class="ml-2 block text-sm text-gray-900">
+                                                {{ $tag->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <x-input-error :messages="$errors->get('tags')" class="mt-1" />
                         </div>
                         
                         <div class="flex items-center justify-end gap-4">
