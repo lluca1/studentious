@@ -40,8 +40,8 @@
                         <!-- Tags Selection -->
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Event Tags</label>
-                            <div class="mt-1 max-h-32 overflow-y-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm">
-                                <div class="space-y-2">
+                            <div class="mt-1 border border-gray-300 rounded-md p-2 bg-white shadow-sm">
+                                <div class="flex flex-wrap gap-2">
                                     @foreach($tags as $tag)
                                         <div class="flex items-center">
                                             <input id="tag-{{ $tag->id }}" wire:model="selectedTags" type="checkbox" value="{{ $tag->id }}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">

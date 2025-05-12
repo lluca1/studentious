@@ -62,8 +62,8 @@
                         <!-- Add Tags Selection -->
                         <div>
                             <x-input-label for="tags" :value="__('Tags')" />
-                            <div class="mt-1 max-h-32 overflow-y-auto border border-gray-300 rounded-md p-2 bg-white shadow-sm">
-                                <div class="space-y-2">
+                            <div class="mt-1 border border-gray-300 rounded-md p-2 bg-white shadow-sm">
+                                <div class="flex flex-wrap gap-2">
                                     @foreach($tags as $tag)
                                         <div class="flex items-center">
                                             <input id="tag-{{ $tag->id }}" name="tags[]" type="checkbox" value="{{ $tag->id }}" 
