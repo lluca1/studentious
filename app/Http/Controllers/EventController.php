@@ -3,48 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Curriculum;
+use App\Models\Tag;
 use App\Services\CalendarService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
-    /**
-     * The calendar service instance.
-     *
-     * @var \App\Services\CalendarService
-     */
     protected $calendarService;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @param \App\Services\CalendarService $calendarService
-     * @return void
-     */
     public function __construct(CalendarService $calendarService)
     {
         $this->calendarService = $calendarService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('events.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('events.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -66,17 +50,11 @@ class EventController extends Controller
             ->with('success', 'Event created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Event $event)
     {
         return view('events.show', compact('event'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Event $event)
     {
         if (auth()->id() !== $event->creator_id) {
@@ -90,16 +68,13 @@ class EventController extends Controller
         return view('events.edit', compact('event', 'tags', 'eventTags'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Event $event)
     {
         if (auth()->id() !== $event->creator_id) {
             return redirect()->route('events.show', $event)
                 ->with('error', 'You are not authorized to update this event.');
         }
-        
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -107,43 +82,68 @@ class EventController extends Controller
             'end_time' => 'required|date|after:start_time',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
+            'curriculum_title' => 'nullable|string|max:255',
+            'curriculum_description' => 'nullable|string|max:1000',
+            'curriculum_file' => 'nullable|file|mimes:pdf|max:10240',
+            'remove_curriculum' => 'nullable|boolean',
         ]);
-        
+
         $event->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
         ]);
-        
-        $event->tags()->sync($request->tags ?? []);
-        
-        return redirect()->route('events.show', $event)
-            ->with('success', 'Event updated successfully.');
+
+        $event->tags()->sync($request->input('tags', []));
+
+        if ($request->boolean('remove_curriculum') && $event->curriculum) {
+            if ($event->curriculum->file_path) {
+                Storage::disk('public')->delete($event->curriculum->file_path);
+            }
+            $event->curriculum->delete();
+        }
+
+        if ($request->filled('curriculum_title') && $request->filled('curriculum_description')) {
+            $curriculum = $event->curriculum ?? new Curriculum();
+            $curriculum->event_id = $event->id;
+            $curriculum->user_id = Auth::id();
+            $curriculum->title = $request->curriculum_title;
+            $curriculum->description = $request->curriculum_description;
+
+            if ($request->hasFile('curriculum_file')) {
+                if ($curriculum->file_path) {
+                    Storage::disk('public')->delete($curriculum->file_path);
+                }
+                $curriculum->file_path = $request->file('curriculum_file')->store('curricula', 'public');
+            }
+
+            $curriculum->save();
+        }
+
+        return redirect()->route('events.show', $event)->with('success', 'Event updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Event $event)
     {
-        if (auth()->id() !== $event->creator_id) {
-            return redirect()->route('events.show', $event)
-                ->with('error', 'You are not authorized to delete this event.');
+        if (Auth::id() !== $event->creator_id) {
+            return redirect()->route('events.show', $event)->with('error', 'You are not authorized to delete this event.');
+        }
+
+        $event->tags()->detach();
+
+        if ($event->curriculum) {
+            if ($event->curriculum->file_path) {
+                Storage::disk('public')->delete($event->curriculum->file_path);
+            }
+            $event->curriculum->delete();
         }
 
         $event->delete();
 
-        return redirect()->route('events.index')
-            ->with('success', 'Event deleted successfully.');
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
     }
 
-    /**
-     * Export event as ICS file.
-     *
-     * @param \App\Models\Event $event
-     * @return \Illuminate\Http\Response
-     */
     public function export(Event $event)
     {
         $icsContent = $this->calendarService->generateEventIcs($event);
@@ -152,8 +152,7 @@ class EventController extends Controller
             ->header('Content-Type', 'text/calendar')
             ->header('Content-Disposition', 'attachment; filename="event-' . $event->id . '.ics"');
     }
-    
-    
+
     public function chat(Event $event)
     {
         return view('events.event-chatroom', compact('event'));

@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     
     //curricula
     Route::post('/curricula', [CurriculumController::class, 'store'])->name('curricula.store');
+    Route::delete('/curricula/{curriculum}', [CurriculumController::class, 'destroy'])->name('curricula.destroy');
     
     //ai content generation
     Route::get('/ai/generate', [App\Http\Controllers\AIContentController::class, 'generate'])->name('ai.generate');
