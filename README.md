@@ -1,6 +1,6 @@
 ## 📌 Project Info
 
-🕒 Done in **40 hours** for **iTec 2025** as part of **Team EREG**  
+🕒 Made in **40 hours** for [iTec 2025](https://itec.ro/) as **Team EREG**  
 🔗 [View on LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7318222754334310401)
 
 ---
